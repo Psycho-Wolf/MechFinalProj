@@ -9,14 +9,13 @@
 #include <avr/interrupt.h>
 #include <inttypes.h>
 
-Volatile uint16_t countUltraS;
-volatile uint8_t centimeter;
+Volatile uint16_t countUltraS;   //Ultrasonic Count. Used for distance Calc
+volatile uint8_t fDistance;	//Distance (cm) from Ultrasonic to Front Wall. Used to turn
 
 int main(void)
 {
 uint8_t distance = 0;
 	// Variable Initializations
-	uint16_t fDist;	// Distance from front
 	int8_t sideDelta; // signed difference between the left and right dist
 	
 	uint8_t count=0;
@@ -30,17 +29,15 @@ uint8_t distance = 0;
 	DIDR0 = (1 << ADC0D);				// Disables digital input on Pin C0
 
 	// Register Initializations for the Ultrasonic Sensor
-	DDRC = 0x0F; //Setting Top nibble B to input, lower output	
 	TCNT1 = 0;		//Clearing TCNT1
-	TCCR1B |= (1<<WGM12);
-	OCR1A = 46647;		//Setting Highest Detectable distance
-	OCR1B = 65534;		//Setting TOP value
-	TCCR1B |= (1<<CS11)	//Prescaler 8
-	TIMSK |= ((1<<OCIE1A)|(1<<OCIE1B))
+	TCCR1B |= (1<<WGM12);	//Enables CTC
+	OCR1A = 29116;		//Setting Highest Detectable distance
+	TCCR1B |= (1<<CS11);	//Prescaler 8
+	TIMSK |= ((1<<OCIE1A)|(1<<OCIE1B));	//Interupt for OCR Compare Enabled
 	sei();
 
 		
-    /* Replace with your application code */
+    /* ULTRASONIC */
     while (1) {	
 	input = (PINC & 0x10)
 	if(input == 0x10){
@@ -48,6 +45,7 @@ uint8_t distance = 0;
 		countUltraS = TCNT1;
 	}
 	
+/* PSEUDO */
 		if turnNum < 8
 			if(checkDist()) // check if fwrd dist is greater than max
 				turn motors on
@@ -75,12 +73,13 @@ uint8_t distance = 0;
     }
 }
 
-ISR(TIMER1_COMPA_vect)
+/* ULTRASONIC ISR */
+ISR(TIMER1_COMPA_vect) //Used to Calculate Distance on Compare
 {
 	countUltraS = TCNT1;
-	while(countUltraS>116 && countUltraS<4176)
+	while(countUltraS>116)
 	{
-		centimeter++
+		fDistance++
 		countUltraS = countUltraS-116
 	}
 }
