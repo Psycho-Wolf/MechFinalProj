@@ -1,5 +1,5 @@
 /*
- * Mainc
+ * Main.c
  *
  * Created: 11/16/2021
  * Author : Tony & Max
@@ -14,9 +14,7 @@ volatile uint8_t centimeter;
 
 int main(void)
 {
-<<<<<<< Updated upstream
 uint8_t distance = 0;
-=======
 	// Variable Initializations
 	uint16_t fDist;	// Distance from front
 	int8_t sideDelta; // signed difference between the left and right dist
@@ -30,10 +28,26 @@ uint8_t distance = 0;
 	ADCSRA |= (1 << ADIF);				// Enables ADC interrupt Flag
 	ADCSRA |= (1 << ADIE);				// ADC Interrupt Enable
 	DIDR0 = (1 << ADC0D);				// Disables digital input on Pin C0
+
+	// Register Initializations for the Ultrasonic Sensor
+	DDRC = 0x0F; //Setting Top nibble B to input, lower output	
+	TCNT1 = 0;		//Clearing TCNT1
+	TCCR1B |= (1<<WGM12);
+	OCR1A = 46647;		//Setting Highest Detectable distance
+	OCR1B = 65534;		//Setting TOP value
+	TCCR1B |= (1<<CS11)	//Prescaler 8
+	TIMSK |= ((1<<OCIE1A)|(1<<OCIE1B))
+	sei();
+
 		
     /* Replace with your application code */
-    while (1) 
-    {	
+    while (1) {	
+	input = (PINC & 0x10)
+	if(input == 0x10){
+		TCCR1B|= !(1<<CS11)
+		countUltraS = TCNT1;
+	}
+	
 		if turnNum < 8
 			if(checkDist()) // check if fwrd dist is greater than max
 				turn motors on
@@ -59,27 +73,6 @@ uint8_t distance = 0;
 			
 
     }
->>>>>>> Stashed changes
-
-	DDRC = 0x0F; //Setting Top nibble B to input, lower output
-	
-	TCNT1 = 0;		//Clearing TCNT1
-	TCCR1B |= (1<<WGM12);
-	OCR1A = 46647;		//Setting Highest Detectable distance
-	OCR1B = 65534;		//Setting TOP value
-	TCCR1B |= (1<<CS11)	//Prescaler 8
-	TIMSK |= ((1<<OCIE1A)|(1<<OCIE1B))
-	sei();
-
-	while (1) 
-    	{
-		input = (PINC & 0x10)
-		if(input == 0x10)
-		{
-			TCCR1B|= !(1<<CS11)
-			countUltraS = TCNT1;
-		}
-	}
 }
 
 ISR(TIMER1_COMPA_vect)
