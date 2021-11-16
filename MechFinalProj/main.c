@@ -1,8 +1,8 @@
 /*
- * MechFinalProj.c
+ * Mainc
  *
- * Created: 11/16/2021 9:06:07 AM
- * Author : anton
+ * Created: 11/16/2021
+ * Author : Tony & Max
  */ 
 
 #include <avr/io.h>
