@@ -6,7 +6,9 @@
  */ 
 
 #include <avr/io.h>
-
+#include <avr/interrupt.h>
+#include <inttypes.h>
+#include <inttypes.h>
 
 int main(void)
 {
