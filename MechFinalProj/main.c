@@ -14,7 +14,7 @@ uint8_t count=0;
     /* Replace with your application code */
     while (1) 
     {
-	count++;
+
     }
 
 
