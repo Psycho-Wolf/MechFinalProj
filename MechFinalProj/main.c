@@ -13,6 +13,7 @@
 int main(void)
 {
 uint8_t count=0;
+uint8_t test;
     /* Replace with your application code */
     while (1) 
     {
