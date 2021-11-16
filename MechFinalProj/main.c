@@ -14,7 +14,8 @@ volatile uint8_t fDistance;	//Distance (cm) from Ultrasonic to Front Wall. Used 
 
 int main(void)
 {
-uint8_t distance = 0;
+	uint8_t turnNum = 0;
+	uint8_t distance = 0;
 	// Variable Initializations
 	int8_t sideDelta; // signed difference between the left and right dist
 	
@@ -39,35 +40,32 @@ uint8_t distance = 0;
 		
     /* ULTRASONIC */
     while (1) {	
-	input = (PINC & 0x10)
-	if(input == 0x10){
-		TCCR1B|= !(1<<CS11)
-		countUltraS = TCNT1;
-	}
+		input = (PINC & 0x10)
+		if(input == 0x10){
+			TCCR1B|= !(1<<CS11)
+			countUltraS = TCNT1;
+		}
 	
-/* PSEUDO */
-		if turnNum < 8
-			if(checkDist()) // check if fwrd dist is greater than max
-				turn motors on
-			else if turnNum == 5
-				stop motors;
+
+		if(turnNum < 8){
+			if(checkDist(fDist)) { // check if fwrd dist is greater than max
+				motorsOn();
+			} else if(turnNum == 5){
+				motorsOff();
 				leftTurn();
-				turnNum++
-				stop motors
-			else
-				stop motors
+				turnNum++;
+				motorsOff();
+			} else {
+				motorsOff();
 				rightTurn();
-				stop motors
-				turnNum++
-		sideDelta = checkSides
-		if(sideDelta > 5)
-			incr one motor speed
-		else if (sideDelta < -5)
-			incr other motor speed
-		else
-			normalize speed
-					
-		else if turnNum >= 8
+				motorsOff();
+				turnNum++;
+			}
+			/*
+			 * PID Controller
+			 *
+			 */
+		} else if turnNum >= 8
 			
 
     }
@@ -82,4 +80,26 @@ ISR(TIMER1_COMPA_vect) //Used to Calculate Distance on Compare
 		fDistance++
 		countUltraS = countUltraS-116
 	}
+}
+
+int checkDist(uint16_t fDist){
+	if(fDist > 13)
+		return 1;
+	else
+		return 0;
+}
+
+void motorsOn(){
+	
+}
+void motorsOff(){
+	
+}
+
+void leftTurn(){
+	
+}
+
+void rightTurn(){
+	
 }
