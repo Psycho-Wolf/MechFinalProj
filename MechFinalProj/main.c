@@ -14,13 +14,13 @@ volatile uint16_t endCount, startCount;
 int calcFwrdDist();
 
 int main(void){
-	DDRB = 0xFF;
+	DDRB = 0x02;
 	DDRC = 0x0F;
 	
 	uint16_t fwrdDist;
 	// Timer Counter 1 w/ PWM initialization
-	TCCR1A |= (1 << COM2B1);
-	TCCR1B |= (1 << WGM21)  | (1 << WGM20) | (1 << CS21);
+	TCCR2A |= (1 << COM2A1);
+	TCCR2B |= (1 << WGM21)  | (1 << WGM20) | (1 << CS21);
 			
 	TCCR1B |= (1 << WGM12) | (1 << ICES1);
 	TCCR1B |= (1 << CS11) | (1 << CS10);	//Start Timer, Prescaler = 64
