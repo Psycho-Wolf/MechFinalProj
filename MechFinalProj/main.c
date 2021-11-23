@@ -10,7 +10,7 @@
 #include <inttypes.h>
 
 
-Volatile uint16_t countUltraS;   //Ultrasonic Count. Used for distance Calc
+volatile uint16_t countUltraS;   //Ultrasonic Count. Used for distance Calc
 volatile uint8_t fDistance;	//Distance (cm) from Ultrasonic to Front Wall. Used to turn
 volatile uint8_t switchIR;
 volatile uint16_t rDist, lDist;
