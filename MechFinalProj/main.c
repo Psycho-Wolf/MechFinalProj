@@ -9,8 +9,11 @@
 #include <avr/interrupt.h>
 #include <inttypes.h>
 
+
 Volatile uint16_t countUltraS;   //Ultrasonic Count. Used for distance Calc
 volatile uint8_t fDistance;	//Distance (cm) from Ultrasonic to Front Wall. Used to turn
+volatile uint8_t switchIR;
+volatile uint16_t rDist, lDist;
 
 int main(void)
 {
@@ -61,10 +64,7 @@ int main(void)
 				motorsOff();
 				turnNum++;
 			}
-			/*
-			 * PID Controller
-			 *
-			 */
+
 		} else if turnNum >= 8
 
     }
@@ -113,4 +113,16 @@ void rightTurn(){
 	PORTD |= 0x01;
 	CLKlength = **INPUT**
 	OCR1A = CLKlength;
+}
+
+ISR(ADC_vect){
+	if(switchIR == 1){
+		rDist = ADC;
+		switchIR = 2;
+		ADMUX |= (1 << MUX0);
+	} else if(switchIR == 2){
+		lDist = ADC;
+		switchIR = 2;
+		ADMUX &= !(1 << MUX0);
+	}
 }
