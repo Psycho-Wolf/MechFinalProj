@@ -66,7 +66,6 @@ int main(void)
 			 *
 			 */
 		} else if turnNum >= 8
-			
 
     }
 }
@@ -89,17 +88,29 @@ int checkDist(uint16_t fDist){
 		return 0;
 }
 
-void motorsOn(){
-	
+void motorsOn()
+{
+	PORTD &= 0xFD;
+	PORTD |= 0x02;
+	CLKlength = 128;
+	OCR1A = CLKlength;
 }
-void motorsOff(){
-	
+void motorsOff()
+{
+	CLKlength = 0;
+	OCR1A = CLKlength;
 }
 
 void leftTurn(){
-	
+	PORTD &= 0xFD;
+	PORTD |= 0x02;
+	CLKlength = **INPUT**
+	OCR1A = CLKlength;
 }
 
 void rightTurn(){
-	
+	PORTD &= 0xFD;
+	PORTD |= 0x01;
+	CLKlength = **INPUT**
+	OCR1A = CLKlength;
 }
