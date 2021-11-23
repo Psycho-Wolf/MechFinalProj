@@ -42,16 +42,15 @@ int main(void)
 
 		
     /* ULTRASONIC */
-    while (1) {	
+    while (1) {		
 		input = (PINC & 0x10)
 		if(input == 0x10){
 			TCCR1B|= !(1<<CS11)
 			countUltraS = TCNT1;
 		}
-	
 
 		if(turnNum < 8){
-			if(checkDist(fDist)) { // check if fwrd dist is greater than max
+			if(checkDist(fDistance)) { // check if fwrd dist is greater than turn distance
 				motorsOn();
 			} else if(turnNum == 5){
 				motorsOff();
@@ -104,14 +103,14 @@ void motorsOff()
 void leftTurn(){
 	PORTD &= 0xFD;
 	PORTD |= 0x02;
-	CLKlength = **INPUT**
+	CLKlength = 100
 	OCR1A = CLKlength;
 }
 
 void rightTurn(){
 	PORTD &= 0xFD;
 	PORTD |= 0x01;
-	CLKlength = **INPUT**
+	CLKlength = 100
 	OCR1A = CLKlength;
 }
 
