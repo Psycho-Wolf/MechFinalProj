@@ -9,19 +9,32 @@
 #include <avr/interrupt.h>
 #include <inttypes.h>
 
+volatile uint16_t endCount, startCount;
 
+<<<<<<< Updated upstream
 volatile uint16_t countUltraS;   //Ultrasonic Count. Used for distance Calc
 volatile uint8_t fDistance;	//Distance (cm) from Ultrasonic to Front Wall. Used to turn
 volatile uint8_t switchIR;
 volatile uint16_t rDist, lDist;
+=======
+int calcFwrdDist();
+>>>>>>> Stashed changes
 
-int main(void)
-{
-	uint8_t turnNum = 0;
-	uint8_t distance = 0;
-	// Variable Initializations
-	int8_t sideDelta; // signed difference between the left and right dist
+int main(void){
+	DDRB = 0x02;
+	DDRC = 0x0F;
 	
+	uint16_t fwrdDist;
+	
+	TCCR1B |= (1 << WGM12) | (1 << ICES1);
+	TCCR1B |= (1 << CS11) | (1 << CS10);	//Start Timer, Prescaler = 64
+	TIMSK1 |= (1 << ICIE1) | (1 << OCIE1A) | (1 << OCIE1B);
+	TCNT1 = 0;
+	OCR1A = 14999;
+	OCR1B = 8;
+	sei();	
+	
+<<<<<<< Updated upstream
 	uint8_t count=0;
 	// Register Initializations to get IR Sensor Working
 	ADMUX |= (1 << REFS0);					// Set ref volt to AVcc
@@ -67,40 +80,35 @@ int main(void)
 
 		} else if turnNum >= 8
 
+=======
+    while (1) {		
+		fwrdDist = calcFwrdDist();
+>>>>>>> Stashed changes
     }
 }
 
-/* ULTRASONIC ISR */
-ISR(TIMER1_COMPA_vect) //Used to Calculate Distance on Compare
-{
-	countUltraS = TCNT1;
-	while(countUltraS>116)
-	{
-		fDistance++
-		countUltraS = countUltraS-116
-	}
+// US distance calculator
+int calcFwrdDist(){
+	uint16_t count, millimeters = 0;
+
+	count = endCount - startCount;
+	millimeters = (count >> 8)*176;
+	TCCR1B |= (1 << ICES1);
+	return millimeters;
+	
 }
 
-int checkDist(uint16_t fDist){
-	if(fDist > 13)
-		return 1;
-	else
-		return 0;
-}
+// US Edge Capture
+ISR(TIMER1_CAPT_vect) {
+	static uint8_t edgeCatch = 1;		//1 => First rising edge
+										//0 => Falling edge
+	if(edgeCatch) {
+		startCount = TCNT1;
+		edgeCatch = 0;
+		TCCR1B &= (0 << ICES1);
+		TCCR1B |= (1 << CS11) | (1 << CS10);	//Start Timer, Prescaler = 64
 
-void motorsOn()
-{
-	PORTD &= 0xFD;
-	PORTD |= 0x02;
-	CLKlength = 128;
-	OCR1A = CLKlength;
-}
-void motorsOff()
-{
-	CLKlength = 0;
-	OCR1A = CLKlength;
-}
-
+<<<<<<< Updated upstream
 void leftTurn(){
 	PORTD &= 0xFD;
 	PORTD |= 0x02;
@@ -114,15 +122,20 @@ void rightTurn(){
 	CLKlength = **INPUT**
 	OCR1A = CLKlength;
 }
+=======
 
-ISR(ADC_vect){
-	if(switchIR == 1){
-		rDist = ADC;
-		switchIR = 2;
-		ADMUX |= (1 << MUX0);
-	} else if(switchIR == 2){
-		lDist = ADC;
-		switchIR = 2;
-		ADMUX &= !(1 << MUX0);
+		} else {
+		endCount = TCNT1;
+		edgeCatch = 1;
+>>>>>>> Stashed changes
+
 	}
+}
+// US Trigger On
+ISR(TIMER1_COMPA_vect){
+	PORTB = 0x02;
+}
+// US Trigger On
+ISR(TIMER1_COMPB_vect){
+	PORTB = 0x00;
 }
