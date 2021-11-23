@@ -42,13 +42,12 @@ int main(void)
 
 		
     /* ULTRASONIC */
-    while (1) {	
+    while (1) {		
 		input = (PINC & 0x10)
 		if(input == 0x10){
 			TCCR1B|= !(1<<CS11)
 			countUltraS = TCNT1;
 		}
-	
 
 		if(turnNum < 8){
 			if(checkDist(fDist)) { // check if fwrd dist is greater than max
