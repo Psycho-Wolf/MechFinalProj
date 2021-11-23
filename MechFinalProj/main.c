@@ -14,15 +14,14 @@ volatile uint16_t endCount, startCount;
 int calcFwrdDist();
 
 int main(void){
-	DDRB = 0x02;
+	DDRB = 0xFF;
 	DDRC = 0x0F;
 	
 	uint16_t fwrdDist;
 	// Timer Counter 1 w/ PWM initialization
 	TCCR1A |= (1 << COM2B1);
-	TCCR1B |= (1 << WGM22)  | (1 << WGM20) | (1 << CS21);
-	OCR2A = 300;
-		
+	TCCR1B |= (1 << WGM21)  | (1 << WGM20) | (1 << CS21);
+			
 	TCCR1B |= (1 << WGM12) | (1 << ICES1);
 	TCCR1B |= (1 << CS11) | (1 << CS10);	//Start Timer, Prescaler = 64
 	TIMSK1 |= (1 << ICIE1) | (1 << OCIE1A) | (1 << OCIE1B);
@@ -33,6 +32,7 @@ int main(void){
 	
     while (1) {
 		
+		OCR2A = 100;
 		fwrdDist = calcFwrdDist();
 		/*if(fwrdDist > 150){
 			motorsOn();
