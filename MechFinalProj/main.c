@@ -48,9 +48,13 @@ int main(void)
 			TCCR1B|= !(1<<CS11)
 			countUltraS = TCNT1;
 		}
-
+		if(checkDist(fDistance))
+		{
+			motorsOn();
+		}
+/*
 		if(turnNum < 8){
-			if(checkDist(fDistance)) { // check if fwrd dist is greater than turn distance
+			if(checkDist(fDistance)) { // check if fwd dist is greater than turn dist
 				motorsOn();
 			} else if(turnNum == 5){
 				motorsOff();
@@ -65,7 +69,7 @@ int main(void)
 			}
 
 		} else if turnNum >= 8
-
+*/
     }
 }
 
@@ -81,7 +85,7 @@ ISR(TIMER1_COMPA_vect) //Used to Calculate Distance on Compare
 }
 
 int checkDist(uint16_t fDist){
-	if(fDist > 13)
+	if(fDist > 20)
 		return 1;
 	else
 		return 0;
