@@ -9,8 +9,9 @@
 #include <avr/interrupt.h>
 #include <inttypes.h>
 
-Volatile uint16_t countUltraS;
-volatile uint8_t centimeter;
+volatile uint16_t countUltraS;
+volatile uint8_t centimeter, switchIR;
+volatile uint16_t rDist, lDist;
 
 int main(void)
 {
@@ -63,10 +64,7 @@ int main(void)
 				motorsOff();
 				turnNum++;
 			}
-			/*
-			 * PID Controller
-			 *
-			 */
+
 		} else if turnNum >= 8
 			
 
@@ -90,17 +88,14 @@ int checkDist(uint16_t fDist){
 		return 0;
 }
 
-void motorsOn(){
-	
-}
-void motorsOff(){
-	
-}
-
-void leftTurn(){
-	
-}
-
-void rightTurn(){
-	
+ISR(ADC_vect){
+	if(switchIR == 1){
+		rDist = ADC;
+		switchIR = 2;
+		ADMUX |= (1 << MUX0);
+	} else if(switchIR == 2){
+		lDist = ADC;
+		switchIR = 2;
+		ADMUX &= !(1 << MUX0);
+	}
 }
