@@ -50,7 +50,7 @@ int main(void)
 		}
 
 		if(turnNum < 8){
-			if(checkDist(fDist)) { // check if fwrd dist is greater than max
+			if(checkDist(fDistance)) { // check if fwrd dist is greater than turn distance
 				motorsOn();
 			} else if(turnNum == 5){
 				motorsOff();
@@ -103,14 +103,14 @@ void motorsOff()
 void leftTurn(){
 	PORTD &= 0xFD;
 	PORTD |= 0x02;
-	CLKlength = **INPUT**
+	CLKlength = 100
 	OCR1A = CLKlength;
 }
 
 void rightTurn(){
 	PORTD &= 0xFD;
 	PORTD |= 0x01;
-	CLKlength = **INPUT**
+	CLKlength = 100
 	OCR1A = CLKlength;
 }
 
