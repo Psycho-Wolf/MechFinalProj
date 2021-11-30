@@ -24,21 +24,35 @@ int main(void)
 	
 	uint8_t count=0;
 	// Register Initializations to get IR Sensor Working
-	ADMUX |= (1 << REFS0);					// Set ref volt to AVcc
-	ADCSRA |= (1 << ADEN) | (1 << ADATE);	// Enables the ADC for on Auto Trigger
-	ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);	// ADC 128 pre-scaling
-	ADCSRA |= (1 << ADSC);				// ADC Start conversion
-	ADCSRA |= (1 << ADIF);				// Enables ADC interrupt Flag
-	ADCSRA |= (1 << ADIE);				// ADC Interrupt Enable
+	
 	DIDR0 = (1 << ADC0D);				// Disables digital input on Pin C0
 
 	// Register Initializations for the Ultrasonic Sensor
 	TCNT1 = 0;		//Clearing TCNT1
-	TCCR1B |= (1<<WGM12);	//Enables CTC
-	OCR1A = 29116;		//Setting Highest Detectable distance
+	TCCR1A |= (1<<WGM12);	//Enables CTC
+	OCR1A = 29116;		//Setting Pulse Delay
+	OCR1B = OCR1A + 29116	//Setting Pulse Delay + Maximum Distance
 	TCCR1B |= (1<<CS11);	//Prescaler 8
-	TIMSK |= ((1<<OCIE1A)|(1<<OCIE1B));	//Interupt for OCR Compare Enabled
+	TIMSK1 |= ((1<<OCIE1A)|(1<<OCIE1B));	//Interupt for OCR Compare Enabled
 	sei();
+
+	// Register Initializations for Motors
+	//Timer
+	TCNT2 = 0;
+	TCCR2A |= (1<<COM2A1);				//Clear on Compare Upcount
+	TCCR2A |= (1<<WGM20);				//PWM w/ Phase Correct
+	TCCR2B |= (1<<WGM22);				//Completes above
+	TCCR2B |= (1<<CS20);				//No Prescaler on Timer
+	OCR2A = 256
+
+	//ADC Output
+	ADMUX |= (1 << REFS0);					// Set ref volt to AVcc
+	ADMUX |= (1 << ADLAR);					//Set Left Adjust Result
+	ADCSRA |= (1 << ADEN) | (1 << ADATE);			// Enables the ADC for on Auto Trigger
+	ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);	// ADC 128 pre-scaling
+	ADCSRA |= (1 << ADSC);					// ADC Start conversion
+//IS THIS NECESSARY? ADIE is 1	ADCSRA |= (1 << ADIF);					// Enables ADC interrupt Flag
+	ADCSRA |= (1 << ADIE);					// ADC Interrupt Enable
 
 		
     /* ULTRASONIC */
