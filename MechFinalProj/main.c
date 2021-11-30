@@ -23,19 +23,30 @@ int main(void){
 	uint8_t distance = 0;
 	// Variable Initializations
 	int8_t sideDelta; // signed difference between the left and right dist
-	
+	DDRB = 0xFF;
 	uint8_t count=0;
 	// Register Initializations to get IR Sensor Working
 	
 	DIDR0 = (1 << ADC0D);				// Disables digital input on Pin C0
 
+	TCCR1B |= (1 << WGM12);
+	TCCR1B |= (1 << ICES1);
+	TCNT1 = 0;
+	TCCR1B |= (1 << CS11) | (1 << CS10);	//Start Timer, Prescaler = 64
+	TIMSK1 |= (1 << ICIE1) | (1 << OCIE1A) | (1 << OCIE1B);
+	OCR1A = 14999;
+	OCR1B = 8;
+/*
 	// Register Initializations for the Ultrasonic Sensor
 	TCNT1 = 0;		//Clearing TCNT1
 	TCCR1A |= (1<<WGM12);	//Enables CTC
+	TCCR1B |= (1 << ICES1); // Input Capt Edge Select
 	OCR1A = 29116;		//Setting Pulse Delay
 	OCR1B = OCR1A + 29116;	//Setting Pulse Delay + Maximum Distance
 	TCCR1B |= (1<<CS11);	//Prescaler 8
 	TIMSK1 |= ((1<<OCIE1A)|(1<<OCIE1B));	//Interupt for OCR Compare Enabled
+*/
+
 	sei();
 
 	// Register Initializations for Motors
@@ -91,15 +102,23 @@ int main(void){
 
 
 /* ULTRASONIC ISR */
-ISR(TIMER1_COMPA_vect) //Used to Calculate Distance on Compare
+ISR(TIMER1_CAPT_vect) //Used to Calculate Distance on Compare
 {
 	countUltraS = TCNT1;
-	while(countUltraS>116)
-	{
+	while(countUltraS>116){
 		fDistance++;
 		countUltraS = countUltraS-116;
 	}
 }
+
+ISR(TIMER1_COMPA_vect){
+	PORTB = 0x02;
+}
+
+ISR(TIMER1_COMPB_vect){
+	PORTB = 0x00;
+}
+
 
 int checkDist(uint16_t fDist){
 	if(fDist > 20)
