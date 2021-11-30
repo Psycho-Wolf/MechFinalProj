@@ -29,7 +29,7 @@ int main(void){
 	uint8_t distance = 0;
 	// Variable Initializations
 	int8_t sideDelta; // signed difference between the left and right dist
-	DDRB = 0x0F;
+	DDRB = 0x02;
 	DDRD = 0x0F;
 	uint8_t count=0;
 	// Register Initializations to get IR Sensor Working
@@ -61,9 +61,8 @@ int main(void){
 	TCNT2 = 0;
 	TCCR2A |= (1<<COM2A1);				//Clear on Compare Upcount
 	TCCR2A |= (1<<WGM20);				//PWM w/ Phase Correct
-	TCCR2B |= (1<<WGM22);				//Completes above
-	TCCR2B |= (1<<CS20);				//No Prescaler on Timer
-	OCR2A = 256;
+	TCCR2B |= (1<<CS22) | (1<<CS21) | (1<<CS20);	//Change Prescaler on Timer
+	TIMSK2 = (1 << OCIE2A);
 
 	//ADC Output
 	ADMUX |= (1 << REFS0);					// Set ref volt to AVcc
