@@ -1,0 +1,11 @@
+
+*.d
+*.o
+*.mk
+MechFinalProj/Debug/Makefile
+*.eep
+*.elf
+*.lss
+*.hex
+*.map
+*.srec
