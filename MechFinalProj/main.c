@@ -13,6 +13,7 @@
 volatile uint16_t startCount, endCount;		// US echo start and stop
 volatile uint8_t switchIR;					// switch flag for the left and right IR sensors
 volatile uint16_t rDist, lDist;				// left and right distances from respective IR sensors
+volatile uint16_t pwm, turnTimeCnt = 0;
 
 // Function definitions
 void motorsOn();
@@ -40,9 +41,11 @@ int main(void) {
 	// Timer 2 configured for motors & Phase correct PWM
 	TCNT2 = 0;
 	TCCR2A |= (1<<COM2A1);				//Clear on Compare Upcount
+	TCCR2A |= (1<<COM2B1);				//Clear on Compare Upcount
+	
 	TCCR2A |= (1<<WGM20);				//PWM w/ Phase Correct
 	TCCR2B |= (1<<CS22) | (1<<CS21) | (1<<CS20);				//No Prescaler on Timer
-	TIMSK2 = (1 << OCIE2A);
+	TIMSK2 = (1 << OCIE2A) | (1 << OCIE2B);
 	
 	sei();
 	
@@ -89,7 +92,6 @@ int main(void) {
 
 // Motor control section
 void motorsOn(){
-	uint16_t pwm = 50;
 	OCR2A = pwm;
 	OCR2B = pwm;
 }
@@ -100,15 +102,27 @@ void motorsOff(){
 }
 
 void leftTurn(){
-	uint16_t pwm = 50;
-	OCR2A = pwm;
-	OCR2B = 0;
+	TIMSK2 = (1 << OCIE2A);
+	pwm = 50;
+	while(turnTimeCnt < 15000){
+		OCR2A = pwm;
+		OCR2B = 0;
+	}
+	turnTimeCnt = 0;
+	TIMSK2 = (0 << OCIE2A);
+
 }
 
 void rightTurn(){
-	uint16_t pwm = 50;
-	OCR2A = 0;
-	OCR2B = pwm;
+	TIMSK2 = (1 << OCIE2A);
+	pwm = 50;
+	while(turnTimeCnt < 15000){
+		OCR2A = 0;
+		OCR2B = pwm;
+	}
+	turnTimeCnt = 0;
+	TIMSK2 = (0 << OCIE2A);
+
 }
 
 // Calculates the forward distance
@@ -156,7 +170,7 @@ ISR(TIMER1_COMPB_vect){
 
 // Empty Timer2 ISR
 ISR(TIMER2_COMPA_vect){
-	
+	turnTimeCnt++;
 }
 
 // IR Sensor measure and switch
