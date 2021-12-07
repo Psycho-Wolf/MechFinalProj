@@ -54,38 +54,40 @@ int main(void) {
 	uint16_t fDist;
 	
 	while (1) {
-		fDist = calcDist();
+		fDist = calcDist(); // Calculate the fwrd distance
+		
 		if(turnNum < 8){				// First Loop run
 			if(checkDist(fDist)){
 				motorsOn();
-				} else if(turnNum == 5){	// First left turn
+			} else if(turnNum == 5){	// First left turn
 				motorsOff();
 				leftTurn();
 				turnNum++;
 				motorsOff();
-				} else {			// All other turns are right
+			} else {					// All other turns are right
 				motorsOff();
 				rightTurn();
 				motorsOff();
 				turnNum++;
 			}
-			} else if (turnNum < 15){		// Second loop run
+			
+		} else if (turnNum < 15){		// Second loop run
 			if(checkDist(fDist)){
 				motorsOn();
-				} else if(turnNum == 13){ // Second left turn CHECK TURN NUMBER
+			} else if(turnNum == 13){	// Second left turn CHECK TURN NUMBER
 				motorsOff();
 				leftTurn();
 				turnNum++;
 				motorsOff();
-				} else {			// All other turns are right
-				motorsOff();
-				rightTurn();
-				motorsOff();
-				turnNum++;
+					} else {					// All other turns are right
+					motorsOff();
+					rightTurn();
+					motorsOff();
+					turnNum++;
+					} 
+				}
+
 			}
-			} else {
-			// Final corridor
-		}
 		
 	}
 }
