@@ -26,7 +26,7 @@ int checkDist(uint16_t fDist);
 int main(void) {
 
 	// Port inits
-	DDRB = 0x0F;
+	DDRB = 0x0E;
 	DDRD = 0x0F;
 
 	// Timer 1 configured for US sensor
@@ -54,47 +54,13 @@ int main(void) {
 	uint16_t fDist;
 	
 	while (1) {
-		fDist = calcDist(); // Calculate the fwrd distance
-		
-		if(turnNum < 8){				// First Loop run
-			if(checkDist(fDist)){
-				motorsOn();
-			} else if(turnNum == 5){	// First left turn
-				motorsOff();
-				leftTurn();
-				turnNum++;
-				motorsOff();
-			} else {					// All other turns are right
-				motorsOff();
-				rightTurn();
-				motorsOff();
-				turnNum++;
-			}
-			
-		} else if (turnNum < 15){		// Second loop run
-			if(checkDist(fDist)){
-				motorsOn();
-			} else if(turnNum == 13){	// Second left turn CHECK TURN NUMBER
-				motorsOff();
-				leftTurn();
-				turnNum++;
-				motorsOff();
-					} else {					// All other turns are right
-					motorsOff();
-					rightTurn();
-					motorsOff();
-					turnNum++;
-					} 
-				}
-
-			}
-		
+		motorsOn();
 	}
 }
 
 // Motor control section
 void motorsOn(){
-	pwm = 150;
+	pwm = 50;
 	OCR2A = pwm;
 	OCR2B = pwm;
 }
@@ -161,7 +127,7 @@ ISR(TIMER1_CAPT_vect){
 	}
 }
 
-// US tigger start
+// US trigger start
 ISR(TIMER1_COMPA_vect){ // US pulse start
 	PORTB = 0x02;
 }
