@@ -51,7 +51,7 @@ int main(void) {
 	
 	// Variables
 	uint8_t turnNum = 0;
-	uint16_t fDist;
+	uint16_t fDist = 0;
 	
 	while (1) {
 		fDist = calcDist(); // Calculate the fwrd distance
@@ -81,7 +81,7 @@ int main(void) {
 				motorsOff();
 					} else {					// All other turns are right
 					motorsOff();
-					rightTurn();
+					rightTurn();        
 					motorsOff();
 					turnNum++;
 					} 
@@ -160,12 +160,12 @@ ISR(TIMER1_CAPT_vect){
 
 // US tigger start
 ISR(TIMER1_COMPA_vect){ // US pulse start
-	PORTB = 0x02;
+	PORTB |= 0x0A;
 }
 
 // US trigger stop
 ISR(TIMER1_COMPB_vect){
-	PORTB = 0x00;
+	PORTB &= 0x08;
 }
 
 // Empty Timer2 ISR
