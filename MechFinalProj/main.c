@@ -94,6 +94,7 @@ int main(void) {
 
 // Motor control section
 void motorsOn(){
+	pwm = 150;
 	OCR2A = pwm;
 	OCR2B = pwm;
 }
