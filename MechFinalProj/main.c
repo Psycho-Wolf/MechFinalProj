@@ -45,10 +45,10 @@ int main(void) {
 	
 	TCCR2A |= (1<<WGM20);				//PWM w/ Phase Correct
 	TCCR2B |= (1<<CS22) | (1<<CS21) | (1<<CS20);				//No Prescaler on Timer
-	TIMSK2 = (1 << OCIE2A) | (1 << OCIE2B);
+	TIMSK2 = (1 << OCIE2A);
 	
 	sei();
-	
+	\
 	// Variables
 	uint8_t turnNum = 0;
 	uint16_t fDist = 0;
@@ -67,7 +67,7 @@ int main(void) {
 			} else {					// All other turns are right
 				motorsOff();
 				rightTurn();
-				motorsOff();
+				motorsOff();	
 				turnNum++;
 			}
 			
